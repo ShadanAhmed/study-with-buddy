@@ -1,26 +1,66 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+[data-grid="1"] {
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 1fr !important;
+}
+[data-grid="2"] {
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: 1fr !important;
+}
+[data-grid="3"],
+[data-grid="4"] {
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+}
+[data-grid="5"],
+[data-grid="6"] {
+  grid-template-columns: 1fr 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+}
+[data-grid="7"],
+[data-grid="8"] {
+  grid-template-columns: 1fr 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr 1fr !important;
+}
+[data-grid] {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.call-grid {
+  display: grid;
+  overflow: auto;
+  gap: 16px;
+  height: 90%;
 }
 
-* {
-  box-sizing: border-box;
+video {
+  object-fit: contain !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@media screen and (max-width: 30em) {
+  [data-grid="2"] {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 1fr 1fr !important;
   }
-  body {
-    color: white;
-    background: black;
+  [data-grid="3"],
+  [data-grid="4"] {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: 1fr 1fr !important;
+  }
+  [data-grid="5"],
+  [data-grid="6"] {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: 1fr 1fr 1fr !important;
+  }
+  [data-grid="7"],
+  [data-grid="8"] {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    grid-template-rows: 1fr 1fr 1fr !important;
+  }
+  [data-grid] {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
   }
 }
