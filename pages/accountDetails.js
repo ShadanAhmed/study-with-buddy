@@ -9,7 +9,7 @@ import authContext from "../context/auth-context";
 import firestoreContext from "../context/firestore-context";
 import useFirestore from "../hooks/useFirestore";
 
-const accountDetails = () => {
+const AccountDetails = () => {
   const [name, setName] = useState("");
   const { createUserInDatabase } = useContext(firestoreContext);
   const { user } = useContext(authContext);
@@ -59,4 +59,4 @@ const accountDetails = () => {
   );
 };
 
-export default accountDetails;
+export default AccountDetails;
