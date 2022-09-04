@@ -22,11 +22,9 @@ export default function useFirestore(currentUserId, isLoggedIn) {
   };
 
   const createUserInDatabase = async (uid, email, name, imageUrl) => {
-    setCurrentUser(
-      await (
-        await setDoc(doc(db, "users", uid), { email, name, imageUrl, uid })
-      ).data()
-    );
+    setDoc(doc(db, "users", uid), { email, name, imageUrl, uid });
+
+    setCurrentUser(await (await findUser(uid)).data());
   };
 
   const createGroupStudy = (
