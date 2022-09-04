@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  Icon,
   Image,
   Text,
   Tooltip,
@@ -17,15 +18,17 @@ import firestoreContext from "../context/firestore-context";
 import groupStudyAnimation from "../animation/group-study.json";
 import Input from "../components/common/Input";
 import { MdKeyboardAlt } from "react-icons/md";
-import { AiOutlineClockCircle } from "react-icons/ai";
+import { AiOutlineClockCircle, AiOutlineLogout } from "react-icons/ai";
 
 import Loader from "../components/common/Loader";
 import axios from "axios";
+import ClickAwayListener from "react-click-away-listener";
 
 export default function Home() {
   const [code, setCode] = useState("");
   const [studyTime, setStudyTime] = useState(20);
   const [discussionTime, setDiscussionTime] = useState(5);
+  const [showPopup, setShowPopup] = useState(false);
   const { isLoggedIn, loading, logout } = useContext(authContext);
   const { currentUser, createGroupStudy } = useContext(firestoreContext);
   const router = useRouter();
@@ -72,6 +75,50 @@ export default function Home() {
         <meta name="description" content="A group study application" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      {showPopup ? (
+        <ClickAwayListener onClickAway={() => setShowPopup(false)}>
+          <Flex
+            shadow={"md"}
+            alignItems="start"
+            justifyContent="center"
+            bg="white"
+            w="56"
+            rounded="md"
+            flexDir={"column"}
+            position="absolute"
+            top="12"
+            textColor={"black"}
+            zIndex="100"
+            right="14"
+            className="font-Poppins shadow-md sub-controls flex items-start justify-center  bg-white w-56 rounded-md flex-col absolute top-12 text-black z-40 right-14"
+          >
+            <Flex
+              w="100%"
+              py="2"
+              px="3"
+              alignItems="center"
+              className="text-2xl flex w-full p-4"
+              onClick={async () => {
+                await logout();
+                router.push(`/signUp`);
+              }}
+              cursor="pointer"
+            >
+              <Box mr="3" pt="2">
+                <Icon as={AiOutlineLogout} boxSize="6" />
+              </Box>
+
+              <Text
+                textSize="md"
+                fontWeight={"bold"}
+                className="text-base font-bold ml-4"
+              >
+                Logout
+              </Text>
+            </Flex>
+          </Flex>
+        </ClickAwayListener>
+      ) : null}
       <Flex flexDirection="column" h="100%" flex="1 auto" overflow="hidden">
         <Flex
           className="header"
@@ -89,6 +136,7 @@ export default function Home() {
             objectFit="cover"
             rounded="full"
             src={currentUser.imageUrl}
+            onClick={() => setShowPopup(!showPopup)}
           />
         </Flex>
         <Flex

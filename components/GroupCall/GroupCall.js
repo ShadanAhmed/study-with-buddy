@@ -12,6 +12,7 @@ import {
   Grid,
   GridItem,
   Icon,
+  Image,
   Text,
   Tooltip,
   useToast,
@@ -41,11 +42,12 @@ import {
 } from "react-icons/bs";
 import axios from "axios";
 import { useReadChannelState } from "@onehop/react";
+import { async } from "@firebase/util";
 
 const client = AgoraRTC.createClient({ codec: "h264", mode: "rtc" });
 
 const GroupCall = () => {
-  const { currentUser, findGroupStudy, createGroupStudy } =
+  const { currentUser, findUser, findGroupStudy, createGroupStudy } =
     useContext(firestoreContext);
   const {
     join,
@@ -69,6 +71,7 @@ const GroupCall = () => {
     router.query.meetingCode
   );
   const [users, setUsers] = useState([]);
+  const [usersData, setUsersData] = useState([]);
 
   useEffect(() => {
     console.log("I am use effect!!!");
@@ -115,13 +118,20 @@ const GroupCall = () => {
         () => {
           setPhase(phaseDiscussion ? 3 : 2);
         },
-        phaseDiscussion ? discussionTime : studyTime * 60 * 1000
+        phaseDiscussion ? discussionTime * 60 * 1000 : studyTime * 60 * 1000
       );
     }
-    if (state.phase == 3 && audio) {
-      toggleMic();
-      setAudio(false);
+
+    if (state) {
+      if (state.phase == 3 && audio) {
+        // client.unpublish();
+        // client.publish([localVideoTrack]);
+        unpublishAudio(true);
+        toggleMic();
+        setAudio(false);
+      }
     }
+
     return () => {
       if (stringUpdateTimer) clearTimeout(stringUpdateTimer);
       if (phaseUpdateTimer) clearTimeout(phaseUpdateTimer);
@@ -173,9 +183,33 @@ const GroupCall = () => {
     ]);
   }, [remoteUsers]);
 
+  useEffect(() => {
+    for (let user of users) {
+      const foundUser = usersData.find((e) => e.uid == user.uid);
+      if (!foundUser) {
+        addUserData(user);
+      }
+    }
+  }, [users]);
+
+  const addUserData = async (user) => {
+    // console.log({ user });
+    let userData = await (await findUser(user.uid)).data();
+    setUsersData([...usersData, userData]);
+  };
+
   // if (!state) {
   //   return <Loader />;
   // }
+
+  const unpublishAudio = async (audio) => {
+    if (audio) {
+      await client.unpublish();
+      await client.publish([localVideoTrack]);
+    } else {
+      await client.publish([localAudioTrack, localVideoTrack]);
+    }
+  };
 
   console.log({ state, error, subscription });
 
@@ -260,15 +294,54 @@ const GroupCall = () => {
           console.error(user.videoTrack);
           return (
             <>
-              <MediaPlayer
-                key={user.uid}
-                videoTrack={
-                  user.uid == currentUser.uid
-                    ? localVideoTrack
-                    : user.videoTrack
-                }
-                audioTrack={user.audioTrack}
-              />{" "}
+              <Box position={"relative"}>
+                <MediaPlayer
+                  key={user.uid}
+                  videoTrack={
+                    user.uid == currentUser.uid
+                      ? video
+                        ? localVideoTrack
+                        : null
+                      : user.videoTrack
+                  }
+                  audioTrack={user.audioTrack}
+                />
+                <Image
+                  visibility={
+                    user.uid == currentUser.uid
+                      ? video
+                        ? "hidden"
+                        : "visible"
+                      : !user.videoTrack
+                      ? "visible"
+                      : "hidden"
+                  }
+                  h="150"
+                  w="150"
+                  rounded="full"
+                  position="absolute"
+                  left="50%"
+                  top="50%"
+                  translate="-50%, -50%"
+                  src={
+                    user.uid == currentUser.uid
+                      ? currentUser.imageUrl
+                      : usersData.find((e) => e.uid == user.uid)?.imageUrl ||
+                        null
+                  }
+                />
+
+                <Text
+                  textColor={"white"}
+                  position="absolute"
+                  bottom={2}
+                  left={2}
+                >
+                  {user.uid == currentUser.uid
+                    ? currentUser.name
+                    : usersData.find((e) => e.uid == user.uid)?.name || null}
+                </Text>
+              </Box>
               {/* <Text color={"white"}>{user.userId}</Text> */}
             </>
           );
@@ -317,6 +390,7 @@ const GroupCall = () => {
             onClick={async () => {
               if (!(state.phase == 3)) {
                 await toggleMic();
+                unpublishAudio(audio);
                 setAudio(!audio);
               }
             }}
