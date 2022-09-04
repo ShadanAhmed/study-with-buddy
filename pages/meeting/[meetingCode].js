@@ -18,15 +18,15 @@ const GroupStudy = () => {
   const { currentUser } = useContext(firestoreContext);
 
   const { loading, isLoggedIn } = useContext(authContext);
-
-  if (loading || !currentUser) {
-    return <Loader />;
-  }
   useEffect(() => {
     if (!isLoggedIn && !loading) {
       router.push("/signUp");
     }
   }, [isLoggedIn, loading]);
+
+  if (loading || !currentUser) {
+    return <Loader />;
+  }
   return (
     <>
       <GroupCall h="300px" />

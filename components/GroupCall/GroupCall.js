@@ -210,7 +210,7 @@ const GroupCall = () => {
             color="gray.200"
           >
             <Flex justifyContent="space-between" alignItems={"center"}>
-              <Text fontSize="lg"> Your meeting's ready</Text>
+              <Text fontSize="lg"> Your meeting&apos;s ready</Text>
               <Icon
                 boxSize={"6"}
                 as={MdClose}

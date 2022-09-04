@@ -9,10 +9,9 @@ const Input = ({ value, setValue, placeholder, type, Icon }) => {
   console.log(value);
   return (
     <InputGroup size="lg">
-      <InputLeftElement
-        pointerEvents="none"
-        children={<Icon color="gray.300" />}
-      />
+      <InputLeftElement pointerEvents="none">
+        <Icon color="gray.300" />
+      </InputLeftElement>
       <ChakraInput
         type={type}
         placeholder={placeholder}

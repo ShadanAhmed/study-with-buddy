@@ -51,7 +51,7 @@ const AuthForm = ({ type, handleSubmit }) => {
           </>
         ) : (
           <>
-            Don't have an account{" "}
+            Don&apos;t have an account{" "}
             <NextLink href="/signUp" passHref>
               <Link display={"inline"} color={"blue.300"}>
                 sign-up
